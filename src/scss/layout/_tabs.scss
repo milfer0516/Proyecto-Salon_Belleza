@@ -1,0 +1,23 @@
+.tabs {
+    @include grid(3, 2rem);
+
+    button {
+        background-color: $blanco;
+        text-transform: uppercase;
+        color: $negro;
+        font-size: 1.4rem;
+        text-align: center;
+        border-style: none;
+        font-weight: $bold;
+        padding: 1rem;
+
+        &.actual {
+            background-color: $azul;
+            color: $blanco;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

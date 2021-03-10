@@ -1,0 +1,27 @@
+.paginacion {
+    display: flex;
+    justify-content: space-between;
+    padding: $separacion 0;
+    button {
+        background-color: $azul;
+        padding: 1rem 3rem;
+        display: block;
+        color: $blanco;
+        text-align: center;
+        border-style: none;
+        font-weight: $bold;
+        font-size: 2rem;
+        margin-left: 0.5rem;
+        text-transform: uppercase;
+
+        &.ocultar {
+            /* display: none; */ //Esta sirve para ocultar un elemento /////pero nos va generar problemas con la experiencia de usuario
+            visibility: hidden; //esta propiedad si nos oculta un elemento
+            //pero va mantener la posicion del elemento y no va generar ////cambios en la pagina
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
