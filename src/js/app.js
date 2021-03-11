@@ -30,6 +30,12 @@ function iniciarApp() {
 
     //muestra el resumen de la cita o mensaje de error
     mostrarResumen();
+
+    //Funcion que captura el nombre del usurio en input
+    nombreCita();
+
+    // Almacenar fecha
+    alamcenarFecha();
 }
 function mostrarSeccion() {
     //Remover la clase de la seccion actual
@@ -224,4 +230,77 @@ function mostrarResumen() {
         //Agregar a resumenDiv
         resumenDiv.appendChild(noServicios);
     }
+}
+
+function nombreCita() {
+    const nombreInput = document.querySelector("#nombre");
+
+    nombreInput.addEventListener("input", (e) => {
+        const nombreTexto = e.target.value.trim();
+        /* El método trim( ) elimina los espacios en blanco en ambos extremos del string. Los espacios en blanco en este contexto, son todos los caracteres sin contenido */
+        console.log(nombreTexto);
+
+        //Validamos que los campos nombre texto no esten vacios
+        if (nombreTexto === "" || nombreTexto.length <= 3) {
+            mostrarAlerta("Nombre no valido", "error");
+        } else {
+            const alerta = document.querySelector(".alerta");
+            if (alerta) {
+                alerta.remove();
+            }
+            cita.nombre = nombreTexto;
+            /* console.log(cita); */
+        }
+    });
+}
+
+function mostrarAlerta(mensaje, tipo) {
+    //Si hay una alerta previa no crear otra
+    const eliminarAlerta = document.querySelector(".alerta");
+    if (eliminarAlerta) {
+        return eliminarAlerta;
+    }
+
+    //Se crea la alerta el mensaje de alerta
+    const alerta = document.createElement("DIV");
+    alerta.textContent = mensaje;
+    alerta.classList.add("alerta");
+
+    if (tipo === "error") {
+        alerta.classList.add("error");
+    } else {
+        /*  console.log(alerta); */
+    }
+    // Mostrar la alerta en el <html>
+    const formulario = document.querySelector(".formulario");
+    formulario.appendChild(alerta);
+
+    //desaparecer alerta
+
+    setTimeout(() => {
+        alerta.remove();
+    }, 4000);
+}
+
+function alamcenarFecha() {
+    const fechaInput = document.querySelector("#fecha");
+
+    fechaInput.addEventListener("input", (e) => {
+        const fecha = new Date(e.target.value).getUTCDay();
+        /* const opciones = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+        }; */
+        /* console.log(fecha); */
+        if ([0].includes(fecha)) {
+            e.preventDefault();
+            fechaInput.value = "";
+            mostrarAlerta("Los Domingos no Trabajamos", "error");
+        } else {
+            cita.fecha = fechaInput.value;
+            console.log(cita);
+            /* console.log("Abierto"); */
+        }
+    });
 }
