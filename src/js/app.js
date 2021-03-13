@@ -36,7 +36,15 @@ function iniciarApp() {
 
     // Almacenar fecha
     alamcenarFecha();
+
+    // Deshabilitar Fechas Anteriores
+
+    deshabilitarFechas();
+
+    // Almacena la Hora de la Cita
+    horaCita();
 }
+
 function mostrarSeccion() {
     //Remover la clase de la seccion actual
     const seccionAnterior = document.querySelector(".mostrar-seccion");
@@ -172,14 +180,14 @@ function agregarServicio(servicioObj) {
 
     cita.servicios = [...servicios, servicioObj];
 
-    console.log(cita);
+    /*  console.log(cita); */
 }
 
 function paginaSiguiente() {
     const paginaSiguiente = document.querySelector("#siguiente");
     paginaSiguiente.addEventListener("click", () => {
         pagina++;
-        console.log(pagina);
+        /* console.log(pagina); */
         botonesPaginador();
     });
 }
@@ -189,7 +197,7 @@ function paginaAnterior() {
     paginaAnterior.addEventListener("click", () => {
         pagina--;
 
-        console.log(pagina);
+        /* console.log(pagina); */
         botonesPaginador();
     });
 }
@@ -199,11 +207,12 @@ function botonesPaginador() {
     const paginaAnterior = document.querySelector("#anterior");
 
     if (pagina === 1) {
-        paginaSiguiente.classList.remove("ocultar");
+        /* paginaSiguiente.classList.remove("ocultar"); */
         paginaAnterior.classList.add("ocultar");
     } else if (pagina === 3) {
         paginaSiguiente.classList.add("ocultar");
         paginaAnterior.classList.remove("ocultar");
+        mostrarResumen(); //Estamos en la pagina 3 se carga todo
     } else {
         paginaAnterior.classList.remove("ocultar");
         paginaSiguiente.classList.remove("ocultar");
@@ -215,21 +224,43 @@ function botonesPaginador() {
 function mostrarResumen() {
     //Destructuring
     const { nombre, fecha, hora, servicios } = cita;
+    /* console.log(cita); */
 
     //Seleccionar resumen
+    const resumenDiv = document.querySelector(".contenido-resumen"); // es una manera de limpiar pero es mala /////practica
+    /* console.log(Object.values(cita)); */
 
-    const resumenDiv = document.querySelector(".contenido-resumen");
+    //LImpia el HTML previo
+    /* resumenDiv.innerHTML = ""; */
+    while (resumenDiv.firstChild) {
+        resumenDiv.removeChild(resumenDiv.firstChild);
+    }
 
-    //Validacion del Objeto
     if (Object.values(cita).includes("")) {
         const noServicios = document.createElement("P");
-        noServicios.textContent =
-            "Faltan Datos por llenar en información del Cliente ";
+        noServicios.textContent = "Faltan Datos por completar";
         noServicios.classList.add("invalidar-cita");
 
-        //Agregar a resumenDiv
+        // Agregar a resumenDiv
         resumenDiv.appendChild(noServicios);
+
+        return;
     }
+
+    // Mostrar Resumen
+    const nombreCita = document.createElement("P");
+    nombreCita.innerHTML = `<span>Nombre:</span> ${nombre}`;
+    // Mostrar Fecha
+    const citaFecha = document.createElement("P");
+    citaFecha.innerHTML = `<span>Fecha:</span> ${fecha}`;
+    // Mostrar Hora
+    const horaCita = document.createElement("P");
+    horaCita.innerHTML = `<span>Hora:</span> ${hora}`;
+
+    resumenDiv.appendChild(nombreCita);
+    resumenDiv.appendChild(citaFecha);
+    resumenDiv.appendChild(horaCita);
+    /* console.log(nombreCita); */
 }
 
 function nombreCita() {
@@ -238,7 +269,7 @@ function nombreCita() {
     nombreInput.addEventListener("input", (e) => {
         const nombreTexto = e.target.value.trim();
         /* El método trim( ) elimina los espacios en blanco en ambos extremos del string. Los espacios en blanco en este contexto, son todos los caracteres sin contenido */
-        console.log(nombreTexto);
+        /* console.log(nombreTexto); */
 
         //Validamos que los campos nombre texto no esten vacios
         if (nombreTexto === "" || nombreTexto.length <= 3) {
@@ -258,7 +289,7 @@ function mostrarAlerta(mensaje, tipo) {
     //Si hay una alerta previa no crear otra
     const eliminarAlerta = document.querySelector(".alerta");
     if (eliminarAlerta) {
-        return eliminarAlerta;
+        return;
     }
 
     //Se crea la alerta el mensaje de alerta
@@ -295,12 +326,50 @@ function alamcenarFecha() {
         /* console.log(fecha); */
         if ([0].includes(fecha)) {
             e.preventDefault();
-            fechaInput.value = "";
+            /* fechaInput.value = ""; */
             mostrarAlerta("Los Domingos no Trabajamos", "error");
         } else {
             cita.fecha = fechaInput.value;
-            console.log(cita);
+            /*  console.log(cita); */
             /* console.log("Abierto"); */
         }
     });
+}
+
+function horaCita() {
+    const inputHora = document.querySelector("#hora");
+
+    inputHora.addEventListener("input", (e) => {
+        const horaCita = e.target.value;
+        const hora = horaCita.split(":");
+
+        if (hora[0] < 08 || hora[0] > 18) {
+            /* console.log("Horas no validas"); */
+            mostrarAlerta("Hora no valida", "error");
+            setTimeout(() => {
+                inputHora.value = "";
+            }, 2000);
+        } else {
+            cita.hora = horaCita;
+            /* console.log("Hora valida"); */
+
+            /* console.log(cita); */
+        }
+    });
+}
+
+function deshabilitarFechas() {
+    const inputFecha = document.querySelector("#fecha");
+
+    const fechaActual = new Date();
+
+    // Formato deseado: DD/MM/AAA
+    const year = fechaActual.getFullYear();
+    const dia = fechaActual.getDate() + 1;
+    const mes = fechaActual.getMonth() + 1;
+    const fechaDeshabilitar = `${dia}-${mes}-${year}`;
+    /* console.log(fechaDeshabilitar); */
+    /* console.log(fechaDeshabilitar); */
+
+    inputFecha.min = fechaDeshabilitar;
 }
